@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kong
+  labels:
+    app.kubernetes.io/name: kong
+    app.kubernetes.io/instance: kong
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kong
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kong
+  template:
+    metadata:
+      labels:
+        app: kong
+    spec:
+      tolerations:
+        - key: NodeType
+          operator: Equal
+          value: app
+          effect: NoSchedule
+      nodeSelector:
+        type: app
+      imagePullSecrets:
+        - name: private-registry
+      containers:
+        - image: <<private-registry>>/kong-oidc:0.0.1-dev
+          imagePullPolicy: IfNotPresent
+          name: kong
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          ports:
+            - containerPort: 8000
+              name: proxy
+              protocol: TCP
+            - containerPort: 8443
+              name: proxy-ssl
+              protocol: TCP
+            - containerPort: 8001
+              name: admin
+              protocol: TCP
+            - containerPort: 8100
+              name: metrics
+              protocol: TCP
+          env:
+            - name: KONG_LOG_LEVEL
+              value: info
+            - name: KONG_ADMIN_ACCESS_LOG
+              value: /dev/stdout
+            - name: KONG_ADMIN_ERROR_LOG
+              value: /dev/stderr
+            - name: KONG_ADMIN_GUI_ACCESS_LOG
+              value: /dev/stdout
+            - name: KONG_ADMIN_GUI_ERROR_LOG
+              value: /dev/stderr
+            - name: KONG_PORTAL_API_ACCESS_LOG
+              value: /dev/stdout
+            - name: KONG_PORTAL_API_ERROR_LOG
+              value: /dev/stderr
+            - name: KONG_PROXY_ACCESS_LOG
+              value: /dev/stdout
+            - name: KONG_PROXY_ERROR_LOG
+              value: /dev/stderr
+            - name: KONG_ANONYMOUS_REPORTS
+              value: false
+            - name: KONG_CLUSTER_LISTEN
+              value: "off"
+            - name: KONG_DATABASE
+              value: "off"
+            - name: KONG_DECLARATIVE_CONFIG
+              value: /kong_dbless/kong.yml
+            - name: KONG_LUA_PACKAGE_PATH
+              value: "/opt/?.lua;/opt/?/init.lua;;"
+            - name: KONG_NGINX_WORKER_PROCESSES
+              value: 2
+            - name: KONG_PLUGINS
+              value: "bundled,oidc"
+            - name: KONG_PORT_MAPS
+              value: "$KONG_LOCAL_HTTP_PORT:8000, $KONG_LOCAL_HTTPS_PORT:8443"
+            - name: KONG_HEADERS
+              value: off
+            - name: KONG_ADMIN_LISTEN
+              value: "0.0.0.0:8001"
+            - name: KONG_PROXY_LISTEN
+              value: "0.0.0.0:8000, 0.0.0.0:8443 http2 ssl"
+            - name:  KONG_STATUS_LISTEN
+              value: "0.0.0.0:8100"
+      
+
+

@@ -1,0 +1,54 @@
+
+apiVersion: configuration.konghq.com/v1
+kind: KongClusterPlugin
+metadata:
+  name: oidc
+  annotations:
+    kubernetes.io/ingress.class: "kong"
+  labels:
+    global: "false"
+disabled: false # optionally disable the plugin in Kong
+plugin: oidc
+config: # configuration for the plugin
+  client_id: localhost-client
+  client_secret: f0b27260-97c9-47ff-8f27-0dd8128686df
+  realm: localhost
+  discovery: https://keycloak.localhost/auth/realms/localhost/.well-known/openid-configuration
+  scope: openid
+  redirect_after_logout_uri : https://keycloak.localhost/auth/realms/localhost/protocol/openid-connect/logout?redirect_uri=https://localhost
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongClusterPlugin
+metadata:
+  name: cors
+  annotations:
+    kubernetes.io/ingress.class: "kong"
+  labels:
+    global: "true"    
+disabled: false # optionally disable the plugin in Kong
+plugin: cors
+config: 
+  origins: 
+    - "*"
+  credentials: true
+  max_age: 3600
+  exposed_headers : 
+    - "X-Auth-Token"
+  preflight_continue: false
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongClusterPlugin
+metadata:
+  name: request-transformer
+  annotations:
+    kubernetes.io/ingress.class: "kong"
+  labels:
+    global: "false"
+disabled: false # optionally disable the plugin in Kong
+plugin: request-transformer
+config:
+  remove:
+    headers:
+    - cookie
+    - x-id-token
+
