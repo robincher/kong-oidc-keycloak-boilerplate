@@ -10,12 +10,12 @@ metadata:
 disabled: false # optionally disable the plugin in Kong
 plugin: oidc
 config: # configuration for the plugin
-  client_id: localhost-client # Realm
+  client_id: kong-oidc 
   client_secret: xxxxxxxx  # Generated on keyCloak
-  realm: localhost
-  discovery: https://keycloak.localhost/auth/realms/localhost/.well-known/openid-configuration
+  realm: kong
+  discovery: https://keycloak.localhost/auth/realms/kong-oidc/.well-known/openid-configuration
   scope: openid
-  redirect_after_logout_uri : https://keycloak.localhost/auth/realms/localhost/protocol/openid-connect/logout?redirect_uri=https://localhost
+  redirect_after_logout_uri : https://keycloak.localhost/auth/realms/kong-oidc/protocol/openid-connect/logout?redirect_uri=https://localhost
 ---
 apiVersion: configuration.konghq.com/v1
 kind: KongClusterPlugin
