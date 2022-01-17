@@ -10,8 +10,8 @@ metadata:
 disabled: false # optionally disable the plugin in Kong
 plugin: oidc
 config: # configuration for the plugin
-  client_id: localhost-client
-  client_secret: f0b27260-97c9-47ff-8f27-0dd8128686df
+  client_id: localhost-client # Realm
+  client_secret: xxxxxxxx  # Generated on keyCloak
   realm: localhost
   discovery: https://keycloak.localhost/auth/realms/localhost/.well-known/openid-configuration
   scope: openid
