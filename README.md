@@ -48,6 +48,7 @@ Web Origin: **localhost** (Allowed CORS origin)
 
 - [Wee Liang - DevOps Engineer @ Thales Airlab](https://www.linkedin.com/in/angweeliang)
 - [Arun - DevOps & Integration # Thales Airlab](https://www.linkedin.com/in/arunsudhakar)
+- [Kelvin - Software Engineer @ Thales Airlab](https://www.linkedin.com/in/kelvin-neo)
 
 ## License
 
